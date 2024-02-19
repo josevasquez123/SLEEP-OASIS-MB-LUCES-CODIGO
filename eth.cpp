@@ -22,15 +22,18 @@ void Eth::reconnect(void){
     String clientId = "WNR_";
     clientId = clientId + String(random(0xffff), HEX);
 
-    char *str[] = {"CHECK-IN", "STAND-BY", "REINGRESO", "PUERTA", "LUZ-TECHO",
+    char *str[] = {"INGRESO", "APAGAR", "LUZ-TECHO",
                     "LUZ-CABECERA", "LUZ-MESA", "LUZ-NCABINA"};                     //SE ESCRIBE TODO LOS TOPICOS MQTT QUE SE QUIERAN SUSCRIBIR
     
-    if (client.connect(clientId.c_str())){
+    if (client.connect(clientId.c_str(),"billeteronv11","billeterownr123")){
       Serial.println("Conexion a MQTT exitosa!!");
       digitalWrite(_mqttConnLed, HIGH);
 
+      client.subscribe("/SEDE2/MB/LUCES/ALIVE/");
+      client.subscribe("/SEDE2/MB/LUCES/PUERTA/");
+
       for (int i=0; i<_nRooms; i++){                                                
-        for (int j=0; j<8; j++){                                                    //J<# -> EL # DEBE SER EL TAMAÑO DEL ARRAY DE STR[]
+        for (int j=0; j<6; j++){                                                    //J<# -> EL # DEBE SER EL TAMAÑO DEL ARRAY DE STR[]
           char buf[30];
           if (i<9){
             snprintf(buf, 30, "/SEDE2/CABINA0%d/%s",i+1, str[j]);

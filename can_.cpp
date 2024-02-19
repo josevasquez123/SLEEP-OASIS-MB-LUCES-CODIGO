@@ -76,14 +76,15 @@ void CanMCP::filter_ids(uint32_t id){
 
  /* CODIGO DE OBJETOS
  * 
- * CHECK-IN: PRENDE LUZ TECHO Y NUMERO DE CABINA -> 0x01
- * STAND-BY: PRENDE LUZ CABECERA Y APAGA LUZ TECHO Y MESA (ACTIVADO CUANDO ACABE LIMPIEZA) -> 0x02
- * REINGRESO: ABRE LA CANTONERA (CUANDO REINGRESA A SU CABINA) -> 0x03
- * PUERTA: ABRE O CIERRA CANTONERA -> 0x04
- * LUZ-TECHO: PRENDE O APAGA LUZ TECHO -> 0x05
- * LUZ-CABECERA: PRENDE O APAGA LUZ CABECERA -> 0x06
- * LUZ-MESA: PRENDE O APAGA LUZ MESA -> 0x07
- * LUZ-NCABINA: PRENDE O APAGA LA LUZ DEL NUMERO DE CABINA -> 0x08
+ * INGRESO: LA CABINA PASA A UN ESTADO OCUPADO Y SE DEBE PRENDER LA LUZ TECHO Y NUMERO DE CABINA -> 0x01
+ * APAGAR: APAGAR TODA LAS LUCES CUANDO LA CABINA ESTE EN UN ESTADO DIFERENTE A OCUPADO -> 0x02
+ * PUERTA: ABRE O CIERRA CANTONERA -> 0x03
+ * LUZ-TECHO: PRENDE O APAGA LUZ TECHO -> 0x04
+ * LUZ-CABECERA: PRENDE O APAGA LUZ CABECERA -> 0x05
+ * LUZ-MESA: PRENDE O APAGA LUZ MESA -> 0x06
+ * LUZ-NCABINA: PRENDE O APAGA LA LUZ DEL NUMERO DE CABINA -> 0x07
+ * BOTON PANICO: LA CABINA ENVIA UN MENSAJE PIDIENDO AYUDA DEL PERSONAL -> 0X08
+ * ACK: CADA CABINA LE ENVIA UN ACK AL MB CADA VEZ QUE LE LLEGA UN COMANDO, ESTA ES LA FORMA DE SABER SI ESA PLACA SIGUE FUNCIONANDO -> 0X09
  */
 
 void CanMCP::rooms_register(int number_rooms){
@@ -103,29 +104,26 @@ void CanMCP::rooms_register(int number_rooms){
 void CanMCP::set_CAN_msg(struct canStructure data, int room_number, String objeto, String msg){
   data.arr[3] = 0x01;
   
-  if(objeto == "CHECK-IN"){
+  if(objeto == "INGRESO"){
     data.arr[1] = 0x01;
   }
-  else if(objeto == "STAND-BY"){
+  else if(objeto == "APAGAR"){
     data.arr[1] = 0x02;
   }
-  else if(objeto == "REINGRESO"){
-    data.arr[1] = 0x03;
-  }
-  else if(objeto == "PUERTA"){
+  //else if(objeto == "PUERTA"){
+    //data.arr[1] = 0x03;
+  //}
+  else if(objeto == "LUZ-TECHO"){
     data.arr[1] = 0x04;
   }
-  else if(objeto == "LUZ-TECHO"){
+  else if(objeto == "LUZ-CABECERA"){
     data.arr[1] = 0x05;
   }
-  else if(objeto == "LUZ-CABECERA"){
+  else if(objeto == "LUZ-MESA"){
     data.arr[1] = 0x06;
   }
-  else if(objeto == "LUZ-MESA"){
-    data.arr[1] = 0x07;
-  }
   else if(objeto == "LUZ-NCABINA"){
-    data.arr[1] = 0x08;
+    data.arr[1] = 0x07;
   }
   if(msg == "true"){
     data.arr[2] = 0x01;
